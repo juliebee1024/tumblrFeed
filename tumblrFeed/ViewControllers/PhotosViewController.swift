@@ -12,14 +12,12 @@ import AlamofireImage
 class PhotosViewController: UIViewController, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    
     var posts: [[String: Any]] = [] //will store the data returned from the network request
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
         tableView.dataSource = self
         
         // Network request snippet
@@ -77,6 +75,8 @@ class PhotosViewController: UIViewController, UITableViewDataSource {
             let url = URL(string: urlString)
             
              cell.photoView.af_setImage(withURL: url!) //passes in the url where the Alamofire method will retrieve the image
+            
+            tableView.rowHeight = 200
         }
         return cell
     }
