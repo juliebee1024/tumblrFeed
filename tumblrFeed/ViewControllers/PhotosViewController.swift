@@ -42,6 +42,40 @@ class PhotosViewController: UIViewController, UITableViewDataSource {
         }
         task.resume()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let cell = sender as! UITableViewCell //Get the cell that triggered the segue
+        
+        if let indexPath = tableView.indexPath(for: cell) //Get the indexPath of the selected photo
+        {
+            let photoDetailsVC = segue.destination as! PhotoDetailsViewController //Get a reference to the PhotoDetailsViewController
+            let post = posts[indexPath.row] //pulls a single post from our posts array
+            
+            // 1.            // 2.          // 3.
+            if let photos = post["photos"] as? [[String: Any]] {
+                // photos is NOT nil, we can use it!
+                // 1. possible that we may get a 'nil' value for an element in the 'photos' array
+                // 2. access 'photos' array of a post
+                // 3. photos contains an array of dictionaries -> casted as String
+                
+                // TODO: Get the photo url
+                // 1. get 1st photo in photos arrayc
+                let photo = photos[0]
+                // 2. get original_size from the photo
+                let originalSize = photo["original_size"] as! [String: Any]
+                // 3. get the url from the original_size dictionary
+                let urlString = originalSize["url"] as! String
+                // 4. create a URL using the urlString
+                let url = URL(string: urlString)
+                
+                photoDetailsVC.imgurl = url//Set the photo property of the PhotoDetailsViewController
+                
+                tableView.rowHeight = 200
+            }
+        }
+    }
+    
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -65,7 +99,7 @@ class PhotosViewController: UIViewController, UITableViewDataSource {
             // 3. photos contains an array of dictionaries -> casted as String
             
             // TODO: Get the photo url
-            // 1. get 1st photo in photos array
+            // 1. get 1st photo in photos arrayc
             let photo = photos[0]
             // 2. get original_size from the photo
             let originalSize = photo["original_size"] as! [String: Any]
@@ -74,10 +108,25 @@ class PhotosViewController: UIViewController, UITableViewDataSource {
             // 4. create a URL using the urlString
             let url = URL(string: urlString)
             
-             cell.photoView.af_setImage(withURL: url!) //passes in the url where the Alamofire method will retrieve the image
+            cell.photoView.af_setImage(withURL: url!) //passes in the url where the Alamofire method will retrieve the image
             
-            tableView.rowHeight = 200
+            //tableView.rowHeight = 200
         }
         return cell
+    }
+    
+    
+    
+    private func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        
+        let view = UIView(frame: CGRect (x:0, y: 0, width:10, height: 50))
+        view.backgroundColor = UIColor.clear
+        return view
+    }
+    
+    //Gray selection box
+    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: IndexPath)
+    {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
